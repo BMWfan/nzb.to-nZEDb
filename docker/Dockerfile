@@ -1,5 +1,10 @@
-FROM nimmis/apache-php5
+#FROM nimmis/apache-php7
+#FROM apache-ubuntu-php7.0
+FROM php:7.4-apache
 MAINTAINER cytec <iamcytec@googlemail.com>
+
+#RUN apt-get update && \
+#  apt-get install -y php7.0-xml
 
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
 

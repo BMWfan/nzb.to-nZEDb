@@ -4,7 +4,8 @@ This is a simple Proxy which translates nzb.to requests to a nZEDb like format f
 
 ## requirements
 
-- Webserver with PHP 5 and the mcrypt and curl extension
+- Webserver with PHP 7
+- composer for keeping libs up to date
 - Tor SOCKS5 Proxy
 
 ## manual installation
@@ -25,16 +26,12 @@ Note: we use a small `docker-compose` file to start a `tor socks5 proxy` as well
 2. change values in `config.inc.php` most should be good to go but you'll need to set `SALT_KEY` and `TMDB_KEY` (SALT_KEY should have 16, 24 or 32 chars)
 3. run `docker-compose up`
 
-
-## FAQ:
-
-**Es wird nur eine leere weiße Seite angezeigt**
-
-Aller wahrscheinlichkeit nach, musst du die Ordner berechtigungen anpassen.
-Im log steht etwas wie: 
-
-```[Fri Jul 26 10:21:02.801693 2019] [:error] [pid 433] [client 192.168.0.66:61683] PHP Fatal error: Uncaught --> Smarty: unable to write file /var/www/httpdocs/libs/smarty//templates_c/wrt5d3ad40ec3a402.19341450 <-- \n thrown in /var/www/httpdocs/libs/smarty/sysplugins/smarty_internal_write_file.php on line 4```
-
-In der Konsole folgendes eingeben:
-
-`docker exec -it nzbto-nzedb_nzbtoproxy_1 bash` und dort dann `chown -R www-data:www-data /var/www` ausführen.
+## Note from r0x0r
+Changed quite a bit to the password handling and search in general normalizen titles and getting rid of passwords with spaces double passwords and so on. Its all a bit hacky,
+but as soon as i have more time I'll make finishing touches. I packaged the libs and hope i haven't forgotten anything important. php files are chmod 0644 and dirs
+to the default 0755.
+I added a UHD search and search by imdb,tmdb aswell as TVRage and tvdb. Right now there is a problem when more than one ID is sent (which nzbhydra does...) It will repeat the search for each ID.
+I will improve that code once i got the time for it and also will add the remaining Sections like Audiobooks/Mp3 since those need a whole new overhaul of the matching it will be 
+quite time consuming so that is low_priority untill i finished the api searches by ids. 
+Anyways it works nicely for me since 6 months this way. Any suggestions are welcome and of course security fixes.
+This is my first git commit so please bare with me, if I made errors after all i just began.

@@ -3,22 +3,29 @@ services:
   nzbtoproxy:
     build: ./docker/.
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80"
+#      - "4433:443"
     volumes:
       - .:/var/www
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    container_name: 'nzb.to-indexer'
     networks:
-      - nzbproxy
+      - usenet
 
   torproxy:
-    image: peterdavehello/tor-socks-proxy
+    build: ./docker2/.
     ports:
       - "9150:9150"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    container_name: "torproxy"
     networks:
-      - nzbproxy
-    depends_on:
-      - nzbtoproxy
+      - usenet
 
 networks:
-  nzbproxy:
-    driver: bridge
+  usenet:
+    external: true
