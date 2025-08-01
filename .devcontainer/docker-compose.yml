@@ -1,0 +1,21 @@
+version: '3'
+services:
+  nzbtoproxy:
+    build:
+      context: ../
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/var/www
+    ports:
+      - "8080:80"
+    networks:
+      - devnet
+  torproxy:
+    build: ../docker2
+    ports:
+      - "9150:9150"
+    networks:
+      - devnet
+networks:
+  devnet:
+    driver: bridge

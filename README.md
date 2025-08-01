@@ -26,6 +26,10 @@ Note: we use a small `docker-compose` file to start a `tor socks5 proxy` as well
 2. change values in `config.inc.php` most should be good to go but you'll need to set `SALT_KEY` and `TMDB_KEY` (SALT_KEY should have 16, 24 or 32 chars)
 3. run `docker-compose up`
 
+
+## Development using Dev Container
+
+A `.devcontainer` setup is included for VS Code Remote Containers or GitHub Codespaces. It starts the webserver and a Tor proxy via Docker Compose. Simply open the repository in VS Code and choose **Reopen in Container**. The application will be available at `http://localhost:8080`.
 ## Note from r0x0r
 Changed quite a bit to the password handling and search in general normalizen titles and getting rid of passwords with spaces double passwords and so on. Its all a bit hacky,
 but as soon as i have more time I'll make finishing touches. I packaged the libs and hope i haven't forgotten anything important. php files are chmod 0644 and dirs
