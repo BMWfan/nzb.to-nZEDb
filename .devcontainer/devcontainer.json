@@ -1,0 +1,11 @@
+{
+    "name": "nzb.to-nZEDb",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "nzbtoproxy",
+    "workspaceFolder": "/var/www",
+    "forwardPorts": [8080],
+    "extensions": [
+        "felixfbecker.php-debug",
+        "bmewburn.vscode-intelephense-client"
+    ]
+}
