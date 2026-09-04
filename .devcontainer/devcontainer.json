@@ -1,0 +1,6 @@
+{
+    "name": "nzb.to-nzbedb",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspace"
+}

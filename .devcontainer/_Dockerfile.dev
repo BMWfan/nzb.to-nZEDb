@@ -1,0 +1,77 @@
+# Stage 1: Vendor Dependencies
+FROM composer:1.9.3 as vendor
+WORKDIR /tmp/
+COPY nZEDb/composer.json composer.json
+RUN composer install \
+    --ignore-platform-reqs \
+    --no-interaction \
+    --no-plugins \
+    --no-scripts \
+    --prefer-dist
+
+# Stage 2: Application
+FROM alpine:3.16
+
+LABEL Maintainer="Tim de Pater <code@trafex.nl>"
+LABEL Description="Lightweight container with Nginx 1.22 & PHP 8.1 based on Alpine Linux."
+
+# Setup document root
+WORKDIR /var/www/httpdocs
+
+# Install packages and remove default server definition
+RUN apk add --no-cache \
+  curl \
+  nginx \
+  php8-simplexml \
+  php8 \
+  php8-ctype \
+  php8-curl \
+  php8-dom \
+  php8-fpm \
+  php8-gd \
+  php8-intl \
+  php8-mbstring \
+  php8-mysqli \
+  php8-opcache \
+  php8-openssl \
+  php8-phar \
+  php8-session \
+  php8-xml \
+  php8-xmlreader \
+  php8-zlib \
+  supervisor
+
+# Configure nginx
+COPY config/nginx.conf /etc/nginx/nginx.conf
+
+# Configure PHP-FPM
+COPY config/fpm-pool.conf /etc/php8/php-fpm.d/www.conf
+COPY config/php.ini /etc/php8/conf.d/custom.ini
+
+# Configure supervisord
+COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Create Folders for Web Application
+RUN mkdir /var/www/cache \
+    && mkdir /var/www/cookies \
+    && mkdir /var/www/logs \
+    && mkdir /var/www/nzbs
+
+# Copy WebServer content
+COPY ./nZEDb/httpdocs /var/www/httpdocs/.
+
+# Copy vendor dependencies
+COPY --from=vendor /tmp/vendor/smarty/smarty/libs /var/www/httpdocs/libs/smarty
+COPY --from=vendor /tmp/vendor /var/www/httpdocs/inc/vendor
+
+# Make sure files/folders needed by the processes are accessible when they run under the nobody user
+RUN chown -R nobody:nobody /var/www /run /var/lib/nginx /var/log/nginx
+
+# Switch to use a non-root user from here on
+USER nobody
+
+# Expose the port nginx is reachable on
+EXPOSE 8080
+
+# Let supervisord start nginx & php-fpm
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

@@ -1,21 +1,27 @@
 version: "3"
 services:
-  nzbtoproxy:
-    build: ./docker/.
+  nzb.to-nzedb:
+    build: .
     ports:
-      - "8080:80"
+      - "8081:8080"
 #      - "4433:443"
     volumes:
-      - .:/var/www
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      #- ./nZEDb/httpdocs:/var/www/httpdocs
+      - /var/www/libs/smarty
+      - /var/www/inc/vendor
+    #  - ./000-default.conf:/etc/nginx/conf.d/site.conf
     restart: unless-stopped
-    container_name: 'nzb.to-indexer'
+    container_name: 'nzb.to-nZEDb'
+  #  environment:
+  #    SERVER_ROOT: "/var/www/httpdocs"
     networks:
       - usenet
 
+
   torproxy:
-    build: ./docker2/.
+    build: ./torproxy/.
     ports:
       - "9150:9150"
     volumes:
